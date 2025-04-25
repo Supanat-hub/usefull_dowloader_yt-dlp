@@ -231,6 +231,15 @@ def update_dropdown(choices):
     else:
         result_label.configure(text="ไม่พบรูปแบบที่รองรับ")
 
+def fmt_speed(speed):
+    if speed is None:
+        return "-"
+    for unit in ['B/s', 'KB/s', 'MB/s', 'GB/s']:
+        if speed < 1024.0:
+            return f"{speed:3.1f} {unit}"
+        speed /= 1024.0
+    return f"{speed:.1f} TB/s"
+
 def download_audio():
     url = url_entry.get()
     selected = dropdown.get()
@@ -240,15 +249,6 @@ def download_audio():
 
     format_id = format_dict[selected]
     result_label.configure(text="กำลังเริ่มดาวน์โหลดเสียง...")
-
-    def fmt_speed(speed):
-        if speed is None:
-            return "-"
-        for unit in ['B/s', 'KB/s', 'MB/s', 'GB/s']:
-            if speed < 1024.0:
-                return f"{speed:3.1f} {unit}"
-            speed /= 1024.0
-        return f"{speed:.1f} TB/s"
 
     def run():
         output_name = sanitize_filename(video_title[0]) + "_audio"
@@ -307,15 +307,6 @@ def download_format():
 
     format_id = format_dict[selected]
     result_label.configure(text="กำลังเริ่ม...")
-
-    def fmt_speed(speed):
-        if speed is None:
-            return "-"
-        for unit in ['B/s', 'KB/s', 'MB/s', 'GB/s']:
-            if speed < 1024.0:
-                return f"{speed:3.1f} {unit}"
-            speed /= 1024.0
-        return f"{speed:.1f} TB/s"
 
     def run():
         output_name = "output_temp"
@@ -376,8 +367,7 @@ def download_format():
         except Exception as e:
             if "[Errno 28] No space left on device" in str(e):
                 result_label.configure(text="⚠️ พื้นที่เก็บข้อมูลไม่เพียงพอ")
-            else:
-                result_label.configure(text=f"❌ เกิดข้อผิดพลาดในการดาวน์โหลด: {e}")
+            pass
 
     threading.Thread(target=run).start()
 
